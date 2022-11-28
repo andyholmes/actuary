@@ -1,0 +1,34 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-FileCopyrightText: 2022 Andy Holmes <andrew.g.r.holmes@gmail.com>
+
+name: Actuary
+description: Build and host a Flatpak repository
+author: Andy Holmes
+branding:
+  icon: package
+  color: brown
+inputs:
+  # Setup Options
+  setup-sanitizer:
+    description: >
+      Extra command-line options for `flatpak build-bundle`.
+    required: false
+  setup-coverage:
+    description: >
+      Enable or disable coverage generation.
+    default: false
+    required: false
+
+  # Advance Options
+  setup-args:
+    description: >
+      Extra command-line options for `meson setup`.
+    required: false
+  test-args:
+    description: >
+      Extra command-line options for `meson test`.
+    required: false
+
+runs:
+  using: node16
+  main: dist/index.js
