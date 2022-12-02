@@ -1,0 +1,61 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+# SPDX-FileCopyrightText: 2022 Andy Holmes <andrew.g.r.holmes@gmail.com>
+
+name: Actuary
+description: Build and host a Flatpak repository
+author: Andy Holmes
+branding:
+  icon: package
+  color: brown
+inputs:
+  suite:
+    description: |
+      The test suite to run.
+    default: test
+    required: false
+  compiler:
+    description: |
+      The compiler suite to use.
+    required: false
+
+  setup-args:
+    description: >
+      Extra command-line options for `meson setup`.
+    required: false
+  test-args:
+    description: >
+      Extra command-line options for `meson test`.
+    required: false
+
+  # `test` Options
+  setup-coverage:
+    description: >
+      Enable or disable coverage generation.
+    default: false
+    required: false
+
+  # `abidiff` Options
+  abidiff-args:
+    description: >
+      Extra command-line options for `abidiff`.
+    required: false
+
+  # `cppcheck` Options
+  cppcheck-args:
+    description: >
+      Extra command-line options for `cppcheck`.
+    required: false
+
+  # LCOV Options
+  lcov-include:
+    description: >
+      Path glob of directories to include in coverage.
+    required: false
+  lcov-exclude:
+    description: >
+      Path glob of directories to exclude from coverage.
+    required: false
+
+runs:
+  using: node16
+  main: dist/index.js
