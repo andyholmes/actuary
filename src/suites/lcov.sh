@@ -24,18 +24,18 @@ actuary_suite_lcov() {
          --rc lcov_branch_coverage=1 \
          --output-file "${ACTUARY_BUILDDIR}/meson-logs/coverage.info"
 
-    if [ "${ACTUARY_LCOV_INCLUDE_PATH}" != "" ]; then
+    if [ "${ACTUARY_LCOV_INCLUDE}" != "" ]; then
         # shellcheck disable=SC2086
         lcov --extract "${ACTUARY_BUILDDIR}/meson-logs/coverage.info" \
-             "${ACTUARY_LCOV_INCLUDE_PATH}" \
+             "${ACTUARY_LCOV_INCLUDE}" \
              --rc lcov_branch_coverage=1 \
              --output-file "${ACTUARY_BUILDDIR}/meson-logs/coverage.info"
     fi
 
-    if [ "${ACTUARY_LCOV_EXCLUDE_PATH}" != "" ]; then
+    if [ "${ACTUARY_LCOV_EXCLUDE}" != "" ]; then
         # shellcheck disable=SC2086
         lcov --remove "${ACTUARY_BUILDDIR}/meson-logs/coverage.info" \
-             "${ACTUARY_LCOV_EXCLUDE_PATH}" \
+             "${ACTUARY_LCOV_EXCLUDE}" \
              --rc lcov_branch_coverage=1 \
              --output-file "${ACTUARY_BUILDDIR}/meson-logs/coverage.info"
     fi

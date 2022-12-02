@@ -39,7 +39,7 @@ scanbuild_file = configure_file(
 )
 
 
-# Exectuable
+# Executable
 actuary = configure_file(
           input: '@0@.sh'.format(meson.project_name()),
          output: meson.project_name(),

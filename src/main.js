@@ -5,6 +5,13 @@ import * as core from '@actions/core';
 import * as exec from '@actions/exec';
 
 
+function getInputArgs(input = '') {
+    // We're going to pass these via environment variables, so rejoin the output
+    // of the multiline-parsing function.
+    return core.getMultilineInput(input).join(' ');
+}
+
+
 /**
  * Run the action
  */
@@ -12,6 +19,10 @@ async function run() {
     const suite = core.getInput('suite');
     const setupArgs = getInputArgs('setup-args');
     const testArgs = getInputArgs('test-args');
+
+    core.info(`suite: ${suite}`);
+    core.info(`setup-args: ${setupArgs}`);
+    core.info(`testArgs: ${testArgs}`);
 
     const actuaryEnv = {
         ...process.env,
@@ -37,7 +48,7 @@ async function run() {
     if (suite === 'cppcheck')
         actuaryEnv.ACTUARY_CPPCHECK_ARGS = core.getInput('cppcheck-args');
 
-    await exec.exec('actuary', [], actuaryEnv);
+    await exec.exec('actuary', [], {env: actuaryEnv});
 }
 
 run();

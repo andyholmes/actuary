@@ -9,7 +9,7 @@ ACTUARY_BUILDDIR="${ACTUARY_BUILDDIR:=$ACTUARY_WORKSPACE/_build}"
 
 
 # Check that the requested suite exists
-if [ ! -e "${ACTUARY_SUITESDIR}/${ACTUARY_SUITE}.sh" ]; then
+if [ ! -e "${ACTUARY_SUITESDIR}/${ACTUARY_SUITE}" ]; then
     echo "Failed to find suite '${ACTUARY_SUITE}'";
     exit 1;
 fi
