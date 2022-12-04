@@ -13,7 +13,6 @@ suites = [
   'asan',
   'tsan',
   'analyzer',
-  'lcov',
   'abidiff',
   'cppcheck',
 ]
@@ -23,7 +22,7 @@ foreach suite : suites
             input: 'suites/@0@.sh'.format(suite),
            output: suite,
     configuration: actuary_conf,
-      install_dir: join_paths(pkgdatadir, 'suites'),
+      install_dir: join_paths(datadir, meson.project_name(), 'suites'),
           install: true,
   )
 endforeach
@@ -39,7 +38,7 @@ scanbuild_file = configure_file(
 )
 
 
-# Exectuable
+# Executable
 actuary = configure_file(
           input: '@0@.sh'.format(meson.project_name()),
          output: meson.project_name(),

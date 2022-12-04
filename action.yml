@@ -22,13 +22,13 @@ inputs:
     description: >
       Extra command-line options for `meson setup`.
     required: false
+
+  # `test` Options
   test-args:
     description: >
       Extra command-line options for `meson test`.
     required: false
-
-  # `test` Options
-  setup-coverage:
+  test-coverage:
     description: >
       Enable or disable coverage generation.
     default: false
@@ -39,11 +39,20 @@ inputs:
     description: >
       Extra command-line options for `abidiff`.
     required: false
+  abidiff-lib:
+    description: >
+      Library path, relative to `$LIBDIR`
+    required: true
 
   # `cppcheck` Options
   cppcheck-args:
     description: >
       Extra command-line options for `cppcheck`.
+    required: false
+  cppcheck-path:
+    description: >
+      Path to the source directory.
+    default: .
     required: false
 
   # LCOV Options
@@ -55,6 +64,17 @@ inputs:
     description: >
       Path glob of directories to exclude from coverage.
     required: false
+
+outputs:
+  log:
+    description: >
+      Path to the primary log file for the suite.
+  coverage:
+    description: >
+      Path to the coverage report.
+  coverage-html:
+    description: >
+      Path to the coverage report (HTML).
 
 runs:
   using: node16

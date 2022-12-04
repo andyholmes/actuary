@@ -1,12 +1,13 @@
 # SPDX-License-Identifier: CC0-1.0
 # SPDX-FileCopyrightText: No rights reserved
 
-. "${ACTUARY_SUITESDIR}/test.sh"
+# shellcheck source=/dev/null
+. "${ACTUARY_SUITESDIR}/test"
 
 
 actuary_suite_asan() {
     ACTUARY_SETUP_ARGS="${ACTUARY_SETUP_ARGS} -Db_sanitize=address,undefined"
-    ACTUARY_TEST_TIMEOUT_MULTIPLIER="${ACTUARY_TEST_TIMEOUT_MULTIPLIER:=3}"
+    ACTUARY_TEST_ARGS="${ACTUARY_TEST_ARGS} --timeout-multiplier=3"
 
     # Clang needs `-Db_lundef=false` to use sanitizers
     if [ "${CC}" = "clang" ]; then

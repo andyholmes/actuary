@@ -9,11 +9,11 @@ ACTUARY_BUILDDIR="${ACTUARY_BUILDDIR:=$ACTUARY_WORKSPACE/_build}"
 
 
 # Check that the requested suite exists
-if [ ! -e "${ACTUARY_SUITESDIR}/${ACTUARY_SUITE}.sh" ]; then
+if [ ! -e "${ACTUARY_SUITESDIR}/${ACTUARY_SUITE}" ]; then
     echo "Failed to find suite '${ACTUARY_SUITE}'";
-    exit 1;
+    exit 127;
 fi
-    
+
 # Configure the compiler collection, if provided
 if [ "${ACTUARY_COMPILER}" = "gcc" ]; then
     export CC=gcc
@@ -28,6 +28,7 @@ elif [ "${ACTUARY_COMPILER}" = "llvm" ]; then
 fi
 
 
+# shellcheck source=/dev/null
 . "${ACTUARY_SUITESDIR}/${ACTUARY_SUITE}"
 "actuary_suite_${ACTUARY_SUITE}" "${@}"
 

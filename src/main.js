@@ -5,9 +5,13 @@ import * as core from '@actions/core';
 import * as exec from '@actions/exec';
 
 
-/**
- * Run the action
- */
+function getInputArgs(input = '') {
+    // We're going to pass these via environment variables, so rejoin the output
+    // of the multiline-parsing function.
+    return core.getMultilineInput(input).join(' ');
+}
+
+
 async function run() {
     const suite = core.getInput('suite');
     const setupArgs = getInputArgs('setup-args');
@@ -23,21 +27,23 @@ async function run() {
     if (core.getInput('compiler'))
         actuaryEnv.ACTUARY_COMPILER = core.getInput('compiler');
 
-    if (core.getBooleanInput('setup-coverage'))
-        actuaryEnv.ACTUARY_SETUP_COVERAGE = 'true';
-
-    if (suite === 'lcov') {
+    if (core.getBooleanInput('test-coverage')) {
+        actuaryEnv.ACTUARY_TEST_COVERAGE = 'true';
         actuaryEnv.ACTUARY_LCOV_INCLUDE = core.getInput('lcov-include');
         actuaryEnv.ACTUARY_LCOV_EXCLUDE = core.getInput('lcov-exclude');
     }
 
-    if (suite === 'abidiff')
+    if (suite === 'abidiff') {
         actuaryEnv.ACTUARY_ABIDIFF_ARGS = core.getInput('abidiff-args');
+        actuaryEnv.ACTUARY_ABIDIFF_LIB = core.getInput('abidiff-lib');
+    }
 
-    if (suite === 'cppcheck')
+    if (suite === 'cppcheck') {
         actuaryEnv.ACTUARY_CPPCHECK_ARGS = core.getInput('cppcheck-args');
+        actuaryEnv.ACTUARY_CPPCHECK_PATH = core.getInput('cppcheck-path');
+    }
 
-    await exec.exec('actuary', [], actuaryEnv);
+    await exec.exec('actuary', [], {env: actuaryEnv});
 }
 
 run();
