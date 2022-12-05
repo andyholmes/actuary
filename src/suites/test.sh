@@ -45,6 +45,20 @@ actuary_suite_test_lcov() {
             --show-details \
             --branch-coverage \
             "${ACTUARY_BUILDDIR}/meson-logs/coverage.info"
+
+    # Generate a coverage badge
+    BADGE_CLR="red"
+    BADGE_PCT=$(lcov --summary "${ACTUARY_BUILDDIR}/meson-logs/coverage.info" | \
+            grep -oP '.*lines.*: \K[0-9\.]+' | xargs printf "%.*f\n" "0");
+
+    if [ "$BADGE_PCT" -ge "90" ]; then
+        BADGE_CLR="green"
+    elif [ "$BADGE_PCT" -ge "75" ]; then
+        BADGE_CLR="yellow"
+    fi
+
+    wget --output-document="${ACTUARY_BUILDDIR}/meson-logs/coverage-html/badge.svg" \
+         "https://img.shields.io/badge/coverage-${BADGE_PCT}%-${BADGE_CLR}.svg";
 }
 
 actuary_suite_test() {
