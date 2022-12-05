@@ -150,31 +150,10 @@ There are currently no outputs
 Actuary provides containers with pre-installed packages for the included suites
 and a companion `toolbox` image for local development.
 
-| Image Name              | Version Tags              | Notes                  |
-|-------------------------|---------------------------|------------------------|
-| `actuary`               | `latest`, `f37`           |                        |
-| `actuary-toolbox`       | `latest`, `f37`           | Includes `gdb`         |
-
-Containers are referenced in the form `ghcr.io/andyholmes/actuary:<tag>`, such
-as `ghcr.io/andyholmes/actuary:latest`:
-
-```yml
-name: Actuary
-
-on:
-  # Rebuild once a day
-  schedule:
-    - cron: "0 0 * * *"
-  workflow_dispatch:
-
-jobs:
-  actuary:
-    name: Actuary
-    runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/andyholmes/actuary/gnome:43
-      options: --privileged
-```
+| Image Name              | Notes                                              |
+|-------------------------|----------------------------------------------------|
+| `actuary`               |                                                    |
+| `actuary-toolbox`       | Includes `gdb`                                     |
 
 Most projects will want to include additional build dependencies, which can be
 done by adding a stage on top of Actuary's base images:
@@ -190,6 +169,28 @@ RUN dnf install -y --enablerepo=fedora-debuginfo,updates-debuginfo \
     dnf clean all && rm -rf /var/cache/dnf
 ```
 
-You can copy-paste the [`cr.yml`]() workflow from Actuary to build and push the
-image to your project's container registry, or devise your own.
+You can copy-paste the [`cr.yml`][cr] workflow from Actuary to build and push
+the image to your project's container registry. Then use your project's CI image
+with Actuary:
 
+```yml
+name: Continuous Integration
+on:
+  pull_request:
+
+jobs:
+  actuary:
+    name: Actuary
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/username/project:latest
+
+    steps:
+      - name: Test
+        uses: andyholmes/actuary@main
+        with:
+          suite: test
+          setup-args: -Dtests=true
+```
+
+[cr]: https://github.com/andyholmes/actuary/blob/main/.github/workflows/cr.yml
