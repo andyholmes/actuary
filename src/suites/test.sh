@@ -57,8 +57,8 @@ actuary_suite_test_lcov() {
         BADGE_CLR="yellow"
     fi
 
-    wget --output-document="${ACTUARY_BUILDDIR}/meson-logs/coverage-html/badge.svg" \
-         "https://img.shields.io/badge/coverage-${BADGE_PCT}%-${BADGE_CLR}.svg";
+    curl --output "${ACTUARY_BUILDDIR}/meson-logs/coverage-html/badge.svg" \
+         "https://img.shields.io/badge/coverage-${BADGE_PCT}%25-${BADGE_CLR}.svg";
 }
 
 actuary_suite_test() {
