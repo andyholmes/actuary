@@ -24,30 +24,70 @@ name: Actuary
 
 on:
   pull_request:
-  workflow_dispatch:
+    branches:
+      - main
 
 jobs:
-  actuary:
-    name: Actuary
+  test:
+    name: Tests
     runs-on: ubuntu-latest
+    # See "Containers" below
     container:
-      image: ghcr.io/andyholmes/actuary/gnome:43
-      options: --privileged
+      image: ghcr.io/${{ github.repository }}:${{ github.base_ref }}
 
+    # Setup a job matrix (compiler x suite), with inputs for each job
     strategy:
       matrix:
-        arch: [x86_64, aarch64]
+        compiler: [gcc, llvm]
+        suite: [test, asan, tsan, analyzer]
+        include:
+          - suite: test
+            setup-args: -Dtests=true
+            test-args: --repeat=3
+          - suite: asan
+            setup-args: -Dtests=true
+          - suite: tsan
+            setup-args: -Dtests=true
+          - suite: analyzer
+            setup-args: -Dtests=false
       fail-fast: false
-      # Only one job at a time can use the shared repository cache
-      max-parallel: 1
 
     steps:
-      # Checkout a repository with Flatpak manifests
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      # Run each test suite
+      - name: Test
+        id: test
+        uses: andyholmes/actuary@main
+        with:
+          suite: ${{ matrix.suite }}
+          compiler: ${{ matrix.compiler }}
+          setup-args: ${{ matrix.setup-args }}
+          test-args: ${{ matrix.test-args }}
+          # Enable coverage generation for one suite
+          test-coverage: ${{ matrix.compiler == 'gcc' && matrix.suite == 'test' }}
+
+      # Upload test log as an artifact
+      - name: Test Report
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: Tests (${{ matrix.compiler }}, ${{ matrix.suite }})
+          path: ${{ steps.test.outputs.log }}
+
+      # Upload coverage HTML as an artifact
+      - name: Coverage (html)
+        if: ${{ matrix.compiler == 'gcc' && matrix.suite == 'test' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: Tests (coverage)
+          path: ${{ steps.test.outputs.coverage-html }}
 ```
 
-## Inputs
+## Configuration
 
 Actuary is really intended to be used in a job matrix, so the two driving inputs
 are `suite` and `compiler`.
@@ -69,7 +109,7 @@ Standard `meson test` runner.
 
 This suite, and suites based on it, respect the following inputs:
 
-| Name                    | Description                                        |
+| Input                   | Description                                        |
 |-------------------------|----------------------------------------------------|
 | `setup-args`            | Options for `meson setup`                          |
 | `test-args`             | Options for `meson test`                           |
@@ -88,7 +128,7 @@ result in an LCOV `.info` file and an HTML report.
 
 This suite, and suites based on it, generate the following outputs:
 
-| Name                    | Description                                        |
+| Output                  | Description                                        |
 |-------------------------|----------------------------------------------------|
 | `log`                   | Path to `testlog.txt` file (`meson test`)          |
 | `coverage`              | Path to `coverage.info` file (LCOV)                |
@@ -117,18 +157,31 @@ Run the compiler's static analysis tool (e.g. LLVM scan-build).
 This suite is not based on the `test` suite, but will respect the `setup-args`
 input.
 
+This suite generates the following outputs:
+
+| Output                  | Description                                        |
+|-------------------------|----------------------------------------------------|
+| `log`                   | Path to logfile                                    |
+
 ### abidiff
 
 Test for API breakage in changes.
 
 This suite respects the following inputs:
 
-| Name                    | Description                                        |
+| Input                   | Description                                        |
 |-------------------------|----------------------------------------------------|
+| `setup-args`            | Options for `meson setup`                          |
 | `abidiff-args`          | Options for `abidiff`                              |
 | `abidiff-lib`           | Shared Object (e.g. `libfoobar-1.0.so`)            |
 
 This suite is will respect the `setup-args` input.
+
+This suite generates the following outputs:
+
+| Output                  | Description                                        |
+|-------------------------|----------------------------------------------------|
+| `log`                   | Path to logfile                                    |
 
 ### cppcheck
 
@@ -136,14 +189,10 @@ Run cppcheck static analyzer
 
 This suite respects the following inputs:
 
-| Name                    | Description                                        |
+| Input                   | Description                                        |
 |-------------------------|----------------------------------------------------|
 | `cppcheck-args`         | Options for `cppcheck`                             |
 | `cppcheck-path`         | Path to the source directory                       |
-
-## Outputs
-
-There are currently no outputs
 
 ## Containers
 
