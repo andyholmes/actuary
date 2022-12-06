@@ -4,8 +4,8 @@
 
 actuary_suite_test_lcov() {
     if [ "${GITHUB_ACTIONS}" = "true" ]; then
-        echo "coverage=${ACTUARY_BUILDDIR}/meson-logs/coverage.info" >> $GITHUB_OUTPUT
-        echo "coverage-html=${ACTUARY_BUILDDIR}/meson-logs/coverage-html" >> $GITHUB_OUTPUT
+        echo "coverage=${ACTUARY_BUILDDIR}/meson-logs/coverage.info" >> "${GITHUB_OUTPUT}"
+        echo "coverage-html=${ACTUARY_BUILDDIR}/meson-logs/coverage-html" >> "${GITHUB_OUTPUT}"
     fi
 
     lcov --directory "${ACTUARY_BUILDDIR}" \
@@ -63,7 +63,7 @@ actuary_suite_test_lcov() {
 
 actuary_suite_test() {
     if [ "${GITHUB_ACTIONS}" = "true" ]; then
-        echo "log=${ACTUARY_BUILDDIR}/meson-logs/testlog.txt" >> $GITHUB_OUTPUT
+        echo "log=${ACTUARY_BUILDDIR}/meson-logs/testlog.txt" >> "${GITHUB_OUTPUT}"
     fi
 
     if [ ! -d "${ACTUARY_BUILDDIR}" ]; then
