@@ -6,6 +6,7 @@ on:
     paths:
       - Dockerfile
       - Dockerfile.toolbox
+      - 'src/**'
   pull_request:
     paths:
       - Dockerfile
