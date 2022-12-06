@@ -32,6 +32,8 @@ actuary_suite_abidiff() {
     mkdir -p "${ACTUARY_BUILDDIR}/meson-logs"
 
     if [ "${GITHUB_ACTIONS}" = "true" ]; then
+        echo "log=${ACTUARY_BUILDDIR}/meson-logs/abidiff.log" >> "${GITHUB_OUTPUT}"
+
         BASE_REF="${GITHUB_BASE_REF}"
         HEAD_REF="${GITHUB_HEAD_REF}"
     else
