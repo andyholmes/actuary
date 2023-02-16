@@ -22,5 +22,9 @@ actuary_suite_analyzer() {
                     ${ACTUARY_SETUP_ARGS} \
                     "${ACTUARY_BUILDDIR}" && \
         ninja -C "${ACTUARY_BUILDDIR}" scan-build
+
+        if [ "${GITHUB_ACTIONS}" = "true" ]; then
+            echo "log=${ACTUARY_BUILDDIR}/meson-logs/scanbuild" >> "${GITHUB_OUTPUT}"
+        fi
     fi
 }
