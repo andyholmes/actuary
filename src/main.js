@@ -43,7 +43,11 @@ async function run() {
         actuaryEnv.ACTUARY_CPPCHECK_PATH = core.getInput('cppcheck-path');
     }
 
-    await exec.exec('actuary', [], {env: actuaryEnv});
+    try {
+        await exec.exec('actuary', [], {env: actuaryEnv});
+    } catch {
+        core.setFailed(`Actuary Suite "${suite}" failed`);
+    }
 }
 
 run();

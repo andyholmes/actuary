@@ -4131,7 +4131,11 @@ async function run() {
         actuaryEnv.ACTUARY_CPPCHECK_PATH = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('cppcheck-path');
     }
 
-    await _actions_exec__WEBPACK_IMPORTED_MODULE_1__.exec('actuary', [], {env: actuaryEnv});
+    try {
+        await _actions_exec__WEBPACK_IMPORTED_MODULE_1__.exec('actuary', [], {env: actuaryEnv});
+    } catch {
+        _actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed(`Actuary Suite "${suite}" failed`);
+    }
 }
 
 run();
