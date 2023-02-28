@@ -50,7 +50,6 @@ actuary_suite_abidiff() {
     # Run `abidiff`
     abidiff --drop-private-types \
             --fail-no-debug-info \
-            --no-added-syms \
             --headers-dir1 "${BASE_DIR}/usr/include" \
             --headers-dir2 "${HEAD_DIR}/usr/include" \
             "${BASE_DIR}/usr/lib/${ACTUARY_ABIDIFF_LIB}" \
