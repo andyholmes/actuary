@@ -4132,7 +4132,7 @@ async function run() {
     }
 
     try {
-        await _actions_exec__WEBPACK_IMPORTED_MODULE_1__.exec('actuary', [], {env: actuaryEnv});
+        await _actions_exec__WEBPACK_IMPORTED_MODULE_1__.exec('actuary-runner', [], {env: actuaryEnv});
     } catch {
         _actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed(`Actuary Suite "${suite}" failed`);
     }

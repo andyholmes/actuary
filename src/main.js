@@ -44,7 +44,7 @@ async function run() {
     }
 
     try {
-        await exec.exec('actuary', [], {env: actuaryEnv});
+        await exec.exec('actuary-runner', [], {env: actuaryEnv});
     } catch {
         core.setFailed(`Actuary Suite "${suite}" failed`);
     }

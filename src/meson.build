@@ -38,10 +38,10 @@ scanbuild_file = configure_file(
 )
 
 
-# Executable
-actuary = configure_file(
-          input: '@0@.sh'.format(meson.project_name()),
-         output: meson.project_name(),
+# Runner
+actuary_runner = configure_file(
+          input: '@0@-runner.sh'.format(meson.project_name()),
+         output: '@0@-runner'.format(meson.project_name()),
   configuration: actuary_conf,
     install_dir: bindir,
         install: true,
