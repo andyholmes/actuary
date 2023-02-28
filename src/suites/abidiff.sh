@@ -54,6 +54,16 @@ actuary_suite_abidiff() {
             --headers-dir2 "${HEAD_DIR}/usr/include" \
             "${BASE_DIR}/usr/lib/${ACTUARY_ABIDIFF_LIB}" \
             "${HEAD_DIR}/usr/lib/${ACTUARY_ABIDIFF_LIB}" > \
-            "${ACTUARY_BUILDDIR}/meson-logs/abidiff.log" || \
-    (cat "${ACTUARY_BUILDDIR}/meson-logs/abidiff.log" && exit 1);
+            "${ACTUARY_BUILDDIR}/meson-logs/abidiff.log" || ABIDIFF_ERROR=true
+
+    if [ "${ABIDIFF_ERROR}" = "true" ]; then
+        ABIDIFF_OUTPUT=$(cat "${ACTUARY_BUILDDIR}/meson-logs/abidiff.log")
+
+        if [ "${GITHUB_ACTIONS}" = "true" ]; then
+            echo "### ABI Compliance" >> "${GITHUB_STEP_SUMMARY}";
+            echo "${ABIDIFF_OUTPUT}" >> "${GITHUB_STEP_SUMMARY}";
+        fi
+
+        echo "${ABIDIFF_OUTPUT}" && exit 1;
+    fi
 }
