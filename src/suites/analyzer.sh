@@ -8,7 +8,7 @@ actuary_suite_analyzer() {
         export CFLAGS="${CFLAGS} -fanalyzer"
 
         # shellcheck disable=SC2086
-        meson setup --buildtype="${ACTUARY_SETUP_BUILDTYPE:=debug}" \
+        meson setup --buildtype=debug \
                     ${ACTUARY_SETUP_ARGS} \
                     "${ACTUARY_BUILDDIR}" && \
         meson compile -C "${ACTUARY_BUILDDIR}"
@@ -18,7 +18,7 @@ actuary_suite_analyzer() {
         export SCANBUILD="@bindir@/actuary-scanbuild"
 
         # shellcheck disable=SC2086
-        meson setup --buildtype="${ACTUARY_SETUP_BUILDTYPE:=debug}" \
+        meson setup --buildtype=debug \
                     ${ACTUARY_SETUP_ARGS} \
                     "${ACTUARY_BUILDDIR}" && \
         ninja -C "${ACTUARY_BUILDDIR}" scan-build
