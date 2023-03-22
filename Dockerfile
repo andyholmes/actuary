@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: CC0-1.0
 # SPDX-FileCopyrightText: No rights reserved
 
-FROM registry.fedoraproject.org/fedora:37
+FROM registry.fedoraproject.org/fedora:38
 
 # The packages below are roughly grouped into three groups: build tooling, test
 # tooling and packages needed for GitHub Actions.
