@@ -5,11 +5,7 @@ FROM registry.fedoraproject.org/fedora:38
 
 # The packages below are roughly grouped into three groups: build tooling, test
 # tooling and packages needed for GitHub Actions.
-#
-# See: https://github.com/andyholmes/copr/tree/main/glib2
-RUN dnf install -y 'dnf-command(copr)' && \
-    dnf copr -y enable andyholmes/main && \
-    dnf install -y --enablerepo=fedora-debuginfo,updates-debuginfo \
+RUN dnf install -y --enablerepo=fedora-debuginfo,updates-debuginfo \
         --setopt=install_weak_deps=False \
         clang clang-analyzer compiler-rt cppcheck cppcheck-htmlreport gcc \
         gettext git libabigail libasan libtsan libubsan lld llvm meson \
