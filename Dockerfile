@@ -8,7 +8,7 @@ FROM registry.fedoraproject.org/fedora:38
 RUN dnf install -y --enablerepo=fedora-debuginfo,updates-debuginfo \
         --setopt=install_weak_deps=False \
         clang clang-analyzer compiler-rt cppcheck cppcheck-htmlreport gcc \
-        gettext git libabigail libasan libtsan libubsan lld llvm meson \
+        gdb gettext git libabigail libasan libtsan libubsan lld llvm meson \
         appstream desktop-file-utils dbus-daemon lcov gnome-desktop-testing \
         python-dbusmock xorg-x11-server-Xvfb \
         glib2-devel glib2-debuginfo rsync && \
