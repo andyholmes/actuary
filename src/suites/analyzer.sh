@@ -11,7 +11,23 @@ actuary_suite_analyzer() {
         meson setup --buildtype=debug \
                     ${ACTUARY_SETUP_ARGS} \
                     "${ACTUARY_BUILDDIR}" && \
-        meson compile -C "${ACTUARY_BUILDDIR}"
+        meson compile -C "${ACTUARY_BUILDDIR}" > \
+            "${ACTUARY_BUILDDIR}/meson-logs/analyzer.log" || ANALYZER_ERROR=true
+
+        if [ "${ANALYZER_ERROR}" = "true" ]; then
+            ANALYZER_OUTPUT=$(cat "${ACTUARY_BUILDDIR}/meson-logs/analyzer.log")
+
+            if [ "${GITHUB_ACTIONS}" = "true" ]; then
+                echo "### GCC Analyzer" >> "${GITHUB_STEP_SUMMARY}";
+                echo "\`\`\`c" >> "${GITHUB_STEP_SUMMARY}";
+                echo "${ANALYZER_OUTPUT}" >> "${GITHUB_STEP_SUMMARY}";
+                echo "\`\`\`" >> "${GITHUB_STEP_SUMMARY}";
+
+                echo "log=${ACTUARY_BUILDDIR}/meson-logs/analyzer.log" >> "${GITHUB_OUTPUT}"
+            fi
+
+            echo "${ANALYZER_OUTPUT}" && exit 1;
+        fi
 
     # clang-analyzer
     elif [ "${CC}" = "clang" ]; then
