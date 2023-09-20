@@ -5,8 +5,8 @@ FROM registry.fedoraproject.org/fedora-toolbox:39
 
 # The packages below are roughly grouped into build tooling and test tooling.
 RUN dnf install -y --setopt=install_weak_deps=False \
-        clang clang-analyzer compiler-rt cppcheck cppcheck-htmlreport gcc \
-        gettext git libabigail libasan libtsan libubsan lld llvm meson \
+        clang clang-analyzer compiler-rt cppcheck cppcheck-htmlreport gcc gdb \
+        gettext git libabigail libasan libtsan libubsan lld llvm meson mold \
         appstream desktop-file-utils dbus-daemon lcov python-dbusmock \
         xorg-x11-server-Xvfb && \
     dnf clean all && rm -rf /var/cache/dnf
