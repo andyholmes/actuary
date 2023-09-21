@@ -6,11 +6,13 @@ on:
     paths:
       - Dockerfile
       - Dockerfile.toolbox
+      - Dockerfile.tsan
       - 'src/**'
   pull_request:
     paths:
       - Dockerfile
       - Dockerfile.toolbox
+      - Dockerfile.tsan
   schedule:
     # Once a week to keep dependencies up to date
     - cron: 0 0 * * 0
@@ -36,6 +38,7 @@ jobs:
         label:
           - CI
           - Toolbox
+          - ThreadSanitizer
         include:
           - label: CI
             file: Dockerfile
@@ -43,6 +46,9 @@ jobs:
           - label: Toolbox
             file: Dockerfile.toolbox
             image: ghcr.io/${{ github.repository }}-toolbox
+          - label: ThreadSanitizer
+            file: Dockerfile.tsan
+            image: ghcr.io/${{ github.repository }}-tsan
       fail-fast: false
 
     steps:
