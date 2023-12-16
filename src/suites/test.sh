@@ -15,18 +15,18 @@ actuary_suite_test_lcov() {
     lcov --directory "${ACTUARY_BUILDDIR}" \
          --capture \
          --no-checksum \
-         --rc lcov_branch_coverage=1 \
+         --rc branch_coverage=1 \
          --output-file "${ACTUARY_BUILDDIR}/meson-logs/coverage.p2" && \
     lcov --add-tracefile "${ACTUARY_BUILDDIR}/meson-logs/coverage.p1" \
          --add-tracefile "${ACTUARY_BUILDDIR}/meson-logs/coverage.p2" \
-         --rc lcov_branch_coverage=1 \
+         --rc branch_coverage=1 \
          --output-file "${ACTUARY_BUILDDIR}/meson-logs/coverage.info"
 
     if [ "${ACTUARY_LCOV_INCLUDE}" != "" ]; then
         # shellcheck disable=SC2086
         lcov --extract "${ACTUARY_BUILDDIR}/meson-logs/coverage.info" \
              "${ACTUARY_LCOV_INCLUDE}" \
-             --rc lcov_branch_coverage=1 \
+             --rc branch_coverage=1 \
              --output-file "${ACTUARY_BUILDDIR}/meson-logs/coverage.info"
     fi
 
@@ -34,7 +34,7 @@ actuary_suite_test_lcov() {
         # shellcheck disable=SC2086
         lcov --remove "${ACTUARY_BUILDDIR}/meson-logs/coverage.info" \
              "${ACTUARY_LCOV_EXCLUDE}" \
-             --rc lcov_branch_coverage=1 \
+             --rc branch_coverage=1 \
              --output-file "${ACTUARY_BUILDDIR}/meson-logs/coverage.info"
     fi
 
