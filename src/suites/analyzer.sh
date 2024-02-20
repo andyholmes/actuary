@@ -37,9 +37,9 @@ actuary_suite_analyzer() {
         meson setup --buildtype=debug \
                     ${ACTUARY_SETUP_ARGS} \
                     "${ACTUARY_BUILDDIR}" && \
-        ninja -C "${ACTUARY_BUILDDIR}" scan-build
+        ninja -C "${ACTUARY_BUILDDIR}" scan-build || ANALYZER_ERROR=true
 
-        if [ "${GITHUB_ACTIONS}" = "true" ]; then
+        if [ "${ANALYZER_ERROR}" = "true" ] && [ "${GITHUB_ACTIONS}" = "true" ]; then
             echo "log=${ACTUARY_BUILDDIR}/meson-logs/scanbuild" >> "${GITHUB_OUTPUT}"
         fi
     fi
