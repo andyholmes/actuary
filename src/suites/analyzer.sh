@@ -39,8 +39,14 @@ actuary_suite_analyzer() {
                     "${ACTUARY_BUILDDIR}" && \
         ninja -C "${ACTUARY_BUILDDIR}" scan-build || ANALYZER_ERROR=true
 
-        if [ "${ANALYZER_ERROR}" = "true" ] && [ "${GITHUB_ACTIONS}" = "true" ]; then
-            echo "log=${ACTUARY_BUILDDIR}/meson-logs/scanbuild" >> "${GITHUB_OUTPUT}"
+        if [ "${ANALYZER_ERROR}" = "true" ]; then
+            ANALYZER_OUTPUT=$(cat "${ACTUARY_BUILDDIR}/meson-logs/scanbuild")
+
+            if [ "${GITHUB_ACTIONS}" = "true" ]; then
+                echo "log=${ACTUARY_BUILDDIR}/meson-logs/scanbuild" >> "${GITHUB_OUTPUT}"
+            fi
+
+            echo "${ANALYZER_OUTPUT}" && exit 1;
         fi
     fi
 }
