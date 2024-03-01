@@ -37,12 +37,18 @@ actuary_suite_analyzer() {
         meson setup --buildtype=debug \
                     ${ACTUARY_SETUP_ARGS} \
                     "${ACTUARY_BUILDDIR}" && \
-        ninja -C "${ACTUARY_BUILDDIR}" scan-build || ANALYZER_ERROR=true
+        ninja -C "${ACTUARY_BUILDDIR}" scan-build 2> \
+            "${ACTUARY_BUILDDIR}/meson-logs/analyzer.log" || ANALYZER_ERROR=true
 
         if [ "${ANALYZER_ERROR}" = "true" ]; then
-            ANALYZER_OUTPUT=$(cat "${ACTUARY_BUILDDIR}/meson-logs/scanbuild")
+            ANALYZER_OUTPUT=$(cat "${ACTUARY_BUILDDIR}/meson-logs/analyzer.log")
 
             if [ "${GITHUB_ACTIONS}" = "true" ]; then
+                echo "### LLVM Analyzer" >> "${GITHUB_STEP_SUMMARY}";
+                echo "\`\`\`c" >> "${GITHUB_STEP_SUMMARY}";
+                echo "${ANALYZER_OUTPUT}" >> "${GITHUB_STEP_SUMMARY}";
+                echo "\`\`\`" >> "${GITHUB_STEP_SUMMARY}";
+
                 echo "log=${ACTUARY_BUILDDIR}/meson-logs/scanbuild" >> "${GITHUB_OUTPUT}"
             fi
 
