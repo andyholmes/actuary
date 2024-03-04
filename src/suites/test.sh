@@ -25,7 +25,7 @@ actuary_suite_test_lcov() {
     if [ "${ACTUARY_LCOV_INCLUDE}" != "" ]; then
         # shellcheck disable=SC2086
         lcov --extract "${ACTUARY_BUILDDIR}/meson-logs/coverage.info" \
-             "${ACTUARY_LCOV_INCLUDE}" \
+             ${ACTUARY_LCOV_INCLUDE} \
              --rc branch_coverage=1 \
              --output-file "${ACTUARY_BUILDDIR}/meson-logs/coverage.info"
     fi
