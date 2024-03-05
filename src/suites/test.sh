@@ -83,9 +83,9 @@ actuary_suite_test() {
                        --print-errorlogs \
                        --repeat="${ACTUARY_TEST_REPEAT:=1}" \
                        ${ACTUARY_TEST_ARGS} \
-                       "${@}" || TEST_ERROR=true
+                       "${@}" || TEST_ERROR=$?
 
-    if [ "${TEST_ERROR}" == "true" ]; then
+    if [ "${TEST_ERROR}" -ne 0 ]; then
         if [ "${GITHUB_ACTIONS}" = "true" ]; then
             echo "### Test Summary" >> "${GITHUB_STEP_SUMMARY}";
             echo "\`\`\`c" >> "${GITHUB_STEP_SUMMARY}";
@@ -95,7 +95,7 @@ actuary_suite_test() {
             echo "\`\`\`" >> "${GITHUB_STEP_SUMMARY}";
         fi
 
-        exit 1;
+        return "${TEST_ERROR}";
     fi
 
     # Coverage Generation
