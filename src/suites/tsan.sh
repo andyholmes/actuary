@@ -15,9 +15,9 @@ actuary_suite_tsan() {
     fi
 
     # Chain-up to the test profile
-    actuary_suite_test "${@}" || SANITIZER_ERROR=true
+    actuary_suite_test "${@}" || SANITIZER_ERROR=$?
 
-    if [ "${SANITIZER_ERROR}" = "true" ]; then
+    if [ "${SANITIZER_ERROR}" -ne 0 ]; then
         if [ "${GITHUB_ACTIONS}" = "true" ]; then
             echo "### ThreadSanitizer" >> "${GITHUB_STEP_SUMMARY}";
             echo "\`\`\`c" >> "${GITHUB_STEP_SUMMARY}";
@@ -27,6 +27,6 @@ actuary_suite_tsan() {
             echo "\`\`\`" >> "${GITHUB_STEP_SUMMARY}";
         fi
 
-        exit 1;
+        return "${SANITIZER_ERROR}";
     fi
 }
