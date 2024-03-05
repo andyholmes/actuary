@@ -83,7 +83,20 @@ actuary_suite_test() {
                        --print-errorlogs \
                        --repeat="${ACTUARY_TEST_REPEAT:=1}" \
                        ${ACTUARY_TEST_ARGS} \
-                       "${@}"
+                       "${@}" || TEST_ERROR=true
+
+    if [ "${TEST_ERROR}" == "true" ]; then
+        if [ "${GITHUB_ACTIONS}" = "true" ]; then
+            echo "### Test Summary" >> "${GITHUB_STEP_SUMMARY}";
+            echo "\`\`\`c" >> "${GITHUB_STEP_SUMMARY}";
+            awk '/^(Summary of Failures:|Ok:)/ { flag = 1 } /Timeout:/ { flag = 0 } flag' \
+                "${ACTUARY_BUILDDIR}/meson-logs/testlog.txt" >> \
+                "${GITHUB_STEP_SUMMARY}";
+            echo "\`\`\`" >> "${GITHUB_STEP_SUMMARY}";
+        fi
+
+        exit 1;
+    fi
 
     # Coverage Generation
     if [ "${ACTUARY_TEST_COVERAGE}" = "true" ]; then

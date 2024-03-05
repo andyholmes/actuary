@@ -15,5 +15,18 @@ actuary_suite_asan() {
     fi
 
     # Chain-up to the test profile
-    actuary_suite_test "${@}"
+    actuary_suite_test "${@}" || SANITIZER_ERROR=true
+
+    if [ "${SANITIZER_ERROR}" = "true" ]; then
+        if [ "${GITHUB_ACTIONS}" = "true" ]; then
+            echo "### AddressSanitizer" >> "${GITHUB_STEP_SUMMARY}";
+            echo "\`\`\`c" >> "${GITHUB_STEP_SUMMARY}";
+            awk '/(Leak|Address)Sanitizer/,/SUMMARY/' \
+                "${ACTUARY_BUILDDIR}/meson-logs/testlog.txt" >> \
+                "${GITHUB_STEP_SUMMARY}";
+            echo "\`\`\`" >> "${GITHUB_STEP_SUMMARY}";
+        fi
+
+        exit 1;
+    fi
 }
