@@ -85,7 +85,7 @@ actuary_suite_test() {
                        ${ACTUARY_TEST_ARGS} \
                        "${@}" || TEST_ERROR=$?
 
-    if [ "${TEST_ERROR}" -ne 0 ]; then
+    if [ "${TEST_ERROR:=0}" -ne 0 ]; then
         if [ "${GITHUB_ACTIONS}" = "true" ]; then
             echo "### Test Summary" >> "${GITHUB_STEP_SUMMARY}";
             echo "\`\`\`c" >> "${GITHUB_STEP_SUMMARY}";
