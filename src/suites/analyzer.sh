@@ -40,7 +40,7 @@ actuary_suite_analyzer() {
         ninja -C "${ACTUARY_BUILDDIR}" scan-build > \
             "${ACTUARY_BUILDDIR}/meson-logs/analyzer.log" || ANALYZER_ERROR=$?
 
-        if [ "${ANALYZER_ERROR}" -ne 0 ]; then
+        if [ "${ANALYZER_ERROR:=0}" -ne 0 ]; then
             echo "log=${ACTUARY_BUILDDIR}/meson-logs/scanbuild" >> "${GITHUB_OUTPUT}"
 
             if [ "${GITHUB_ACTIONS}" = "true" ]; then
