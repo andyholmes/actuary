@@ -27,6 +27,7 @@ actuary_suite_test_lcov() {
         lcov --extract "${ACTUARY_BUILDDIR}/meson-logs/coverage.info" \
              ${ACTUARY_LCOV_INCLUDE} \
              --rc branch_coverage=1 \
+             --ignore-errors unused \
              --output-file "${ACTUARY_BUILDDIR}/meson-logs/coverage.info"
     fi
 
