@@ -36,6 +36,7 @@ actuary_suite_test_lcov() {
         lcov --remove "${ACTUARY_BUILDDIR}/meson-logs/coverage.info" \
              "${ACTUARY_LCOV_EXCLUDE}" \
              --rc branch_coverage=1 \
+             --ignore-errors unused \
              --output-file "${ACTUARY_BUILDDIR}/meson-logs/coverage.info"
     fi
 
