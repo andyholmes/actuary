@@ -89,12 +89,13 @@ actuary_suite_test() {
 
     if [ "${TEST_ERROR:=0}" -ne 0 ]; then
         if [ "${GITHUB_ACTIONS}" = "true" ]; then
-            echo "### Test Summary" >> "${GITHUB_STEP_SUMMARY}";
-            echo "\`\`\`c" >> "${GITHUB_STEP_SUMMARY}";
-            awk '/^(Summary of Failures:|Ok:)/ { flag = 1 } /Timeout:/ { flag = 0 } flag' \
-                "${ACTUARY_BUILDDIR}/meson-logs/testlog.txt" >> \
-                "${GITHUB_STEP_SUMMARY}";
-            echo "\`\`\`" >> "${GITHUB_STEP_SUMMARY}";
+            {
+                echo "### Test Summary"
+                echo "\`\`\`c"
+                awk '/^(Summary of Failures:|Ok:)/ { flag = 1 } /Timeout:/ { flag = 0 } flag' \
+                    "${ACTUARY_BUILDDIR}/meson-logs/testlog.txt"
+                echo "\`\`\`"
+            } >> "${GITHUB_STEP_SUMMARY}"
         fi
 
         return "${TEST_ERROR}";
