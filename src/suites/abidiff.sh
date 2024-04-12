@@ -60,8 +60,12 @@ actuary_suite_abidiff() {
         ABIDIFF_OUTPUT=$(cat "${ACTUARY_BUILDDIR}/meson-logs/abidiff.log")
 
         if [ "${GITHUB_ACTIONS}" = "true" ]; then
-            echo "### ABI Compliance" >> "${GITHUB_STEP_SUMMARY}";
-            echo "${ABIDIFF_OUTPUT}" >> "${GITHUB_STEP_SUMMARY}";
+            {
+                echo "### ABI Compliance"
+                echo "\`\`\`"
+                echo "${ABIDIFF_OUTPUT}"
+                echo "\`\`\`"
+            } >> "${GITHUB_STEP_SUMMARY}"
         fi
 
         echo "${ABIDIFF_OUTPUT}" && exit 1;
