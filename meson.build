@@ -7,11 +7,9 @@ project('actuary', 'c',
     meson_version: '>= 0.59.0',
 )
 
-
 prefix = get_option('prefix')
 bindir = join_paths(prefix, get_option('bindir'))
 datadir = join_paths(prefix, get_option('datadir'))
-
 
 subdir('src')
 
