@@ -36,7 +36,6 @@ jobs:
         label:
           - CI
           - Toolbox
-          - ThreadSanitizer
         include:
           - label: CI
             file: Dockerfile
