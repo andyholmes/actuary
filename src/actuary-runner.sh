@@ -3,8 +3,8 @@
 # SPDX-License-Identifier: CC0-1.0
 # SPDX-FileCopyrightText: No rights reserved
 
-ACTUARY_WORKSPACE="${GITHUB_WORKSPACE:=$(git rev-parse --show-toplevel)}"
-ACTUARY_BUILDDIR="${ACTUARY_BUILDDIR:=$ACTUARY_WORKSPACE/_build}"
+ACTUARY_WORKSPACE="${GITHUB_WORKSPACE:-$(git rev-parse --show-toplevel)}"
+ACTUARY_BUILDDIR="${ACTUARY_BUILDDIR:-$ACTUARY_WORKSPACE/_build}"
 
 # Configure the compiler collection, if provided
 if [ "${ACTUARY_COMPILER}" = "gcc" ]; then
@@ -93,7 +93,7 @@ actuary_suite_test() {
 
     if [ ! -d "${ACTUARY_BUILDDIR}" ]; then
         # shellcheck disable=SC2086
-        meson setup -Db_coverage="${ACTUARY_TEST_COVERAGE:=false}" \
+        meson setup -Db_coverage="${ACTUARY_TEST_COVERAGE:-false}" \
                     ${ACTUARY_SETUP_ARGS} \
                     "${ACTUARY_BUILDDIR}"
     fi
@@ -111,7 +111,7 @@ actuary_suite_test() {
         xvfb-run -d \
             meson test -C "${ACTUARY_BUILDDIR}" \
                        --print-errorlogs \
-                       --repeat="${ACTUARY_TEST_REPEAT:=1}" \
+                       --repeat="${ACTUARY_TEST_REPEAT:-1}" \
                        ${ACTUARY_TEST_ARGS} \
                        "${@}" || TEST_ERROR=$?
 
@@ -119,7 +119,7 @@ actuary_suite_test() {
         export LD_LIBRARY_PATH="${OLD_LIBRARY_PATH}:/usr/tsan/lib64"
     fi
 
-    if [ "${TEST_ERROR:=0}" -ne 0 ]; then
+    if [ "${TEST_ERROR:-0}" -ne 0 ]; then
         if [ "${GITHUB_ACTIONS}" = "true" ]; then
             {
                 echo "### Test Summary"
@@ -155,7 +155,7 @@ actuary_suite_asan() {
     # Chain-up to the test profile
     actuary_suite_test "${@}" || TEST_ERROR=$?
 
-    if [ "${TEST_ERROR:=0}" -ne 0 ]; then
+    if [ "${TEST_ERROR:-0}" -ne 0 ]; then
         if [ "${GITHUB_ACTIONS}" = "true" ]; then
             {
                 echo "### AddressSanitizer"
@@ -182,7 +182,7 @@ actuary_suite_tsan() {
     # Chain-up to the test profile
     actuary_suite_test "${@}" || TEST_ERROR=$?
 
-    if [ "${TEST_ERROR:=0}" -ne 0 ]; then
+    if [ "${TEST_ERROR:-0}" -ne 0 ]; then
         if [ "${GITHUB_ACTIONS}" = "true" ]; then
             {
                 echo "### ThreadSanitizer"
@@ -213,7 +213,7 @@ actuary_suite_analyzer() {
         meson compile -C "${ACTUARY_BUILDDIR}" > \
             "${ACTUARY_BUILDDIR}/meson-logs/analyzer.log" || TEST_ERROR=$?
 
-        if [ "${TEST_ERROR:=0}" -ne 0 ]; then
+        if [ "${TEST_ERROR:-0}" -ne 0 ]; then
             ANALYZER_OUTPUT=$(cat "${ACTUARY_BUILDDIR}/meson-logs/analyzer.log")
 
             if [ "${GITHUB_ACTIONS}" = "true" ]; then
@@ -240,7 +240,7 @@ actuary_suite_analyzer() {
         ninja -C "${ACTUARY_BUILDDIR}" scan-build > \
             "${ACTUARY_BUILDDIR}/meson-logs/analyzer.log" || TEST_ERROR=$?
 
-        if [ "${TEST_ERROR:=0}" -ne 0 ]; then
+        if [ "${TEST_ERROR:-0}" -ne 0 ]; then
             if [ "${GITHUB_ACTIONS}" = "true" ]; then
                 {
                     echo "### LLVM Analyzer"
@@ -299,7 +299,7 @@ actuary_suite_abidiff_build() {
 
     if [ ! -d "${BUILDSUBDIR}" ]; then
         # shellcheck disable=SC2086
-        meson setup --buildtype="${ACTUARY_SETUP_BUILDTYPE:=release}" \
+        meson setup --buildtype="${ACTUARY_SETUP_BUILDTYPE:-release}" \
                     --prefix=/usr \
                     --libdir=lib \
                     ${ACTUARY_SETUP_ARGS} \
@@ -342,7 +342,7 @@ actuary_suite_abidiff() {
             "${HEAD_DIR}/usr/lib/${ACTUARY_ABIDIFF_LIB}" > \
             "${ACTUARY_BUILDDIR}/meson-logs/abidiff.log" || TEST_ERROR=$?
 
-    if [ "${TEST_ERROR:=0}" -ne 0 ]; then
+    if [ "${TEST_ERROR:-0}" -ne 0 ]; then
         ABIDIFF_OUTPUT=$(cat "${ACTUARY_BUILDDIR}/meson-logs/abidiff.log")
 
         if [ "${GITHUB_ACTIONS}" = "true" ]; then
