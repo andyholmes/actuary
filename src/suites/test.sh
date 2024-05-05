@@ -78,6 +78,11 @@ actuary_suite_test() {
     # Build
     meson compile -C "${ACTUARY_BUILDDIR}"
 
+    if [ "${ACTUARY_TEST_SUITE}" = "tsan" ]; then
+        OLD_LIBRARY_PATH="${LD_LIBRARY_PATH}"
+        export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/usr/tsan/lib64"
+    fi
+
     # shellcheck disable=SC2086
     dbus-run-session \
         xvfb-run -d \
@@ -86,6 +91,10 @@ actuary_suite_test() {
                        --repeat="${ACTUARY_TEST_REPEAT:=1}" \
                        ${ACTUARY_TEST_ARGS} \
                        "${@}" || TEST_ERROR=$?
+
+    if [ "${ACTUARY_TEST_SUITE}" = "tsan" ]; then
+        export LD_LIBRARY_PATH="${OLD_LIBRARY_PATH}"
+    fi
 
     if [ "${TEST_ERROR:=0}" -ne 0 ]; then
         if [ "${GITHUB_ACTIONS}" = "true" ]; then
