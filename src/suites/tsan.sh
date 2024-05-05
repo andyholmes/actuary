@@ -15,7 +15,6 @@ actuary_suite_tsan() {
     fi
 
     # Chain-up to the test profile
-    export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/usr/tsan/lib64"
     actuary_suite_test "${@}" || TEST_ERROR=$?
 
     if [ "${TEST_ERROR:=0}" -ne 0 ]; then
