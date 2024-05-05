@@ -202,6 +202,11 @@ actuary_suite_tsan() {
 ################################################################################
 
 actuary_suite_analyzer() {
+    TEST_LOG="${ACTUARY_BUILDDIR}/meson-logs/analyzer.log"
+    if [ "${GITHUB_ACTIONS}" = "true" ]; then
+        echo "log=${TEST_LOG}" >> "${GITHUB_OUTPUT}"
+    fi
+
     # GCC analyzer
     if [ "${CC}" = "gcc" ]; then
         export CFLAGS="${CFLAGS} -fanalyzer"
@@ -211,22 +216,21 @@ actuary_suite_analyzer() {
                     ${ACTUARY_SETUP_ARGS} \
                     "${ACTUARY_BUILDDIR}" && \
         meson compile -C "${ACTUARY_BUILDDIR}" > \
-            "${ACTUARY_BUILDDIR}/meson-logs/analyzer.log" || TEST_ERROR=$?
+            "${TEST_LOG}" || TEST_ERROR=$?
 
         if [ "${TEST_ERROR:-0}" -ne 0 ]; then
-            ANALYZER_OUTPUT=$(cat "${ACTUARY_BUILDDIR}/meson-logs/analyzer.log")
+            TEST_OUTPUT=$(cat "${TEST_LOG}")
 
             if [ "${GITHUB_ACTIONS}" = "true" ]; then
                 {
                     echo "### GCC Analyzer"
                     echo "\`\`\`c"
-                    echo "${ANALYZER_OUTPUT}"
+                    echo "${TEST_OUTPUT}"
                     echo "\`\`\`"
                 } >> "${GITHUB_STEP_SUMMARY}"
-                echo "log=${ACTUARY_BUILDDIR}/meson-logs/analyzer.log" >> "${GITHUB_OUTPUT}"
             fi
 
-            echo "${ANALYZER_OUTPUT}" && exit 1;
+            echo "${TEST_OUTPUT}" && return "${TEST_ERROR}";
         fi
 
     # clang-analyzer
@@ -238,7 +242,7 @@ actuary_suite_analyzer() {
                     ${ACTUARY_SETUP_ARGS} \
                     "${ACTUARY_BUILDDIR}" && \
         ninja -C "${ACTUARY_BUILDDIR}" scan-build > \
-            "${ACTUARY_BUILDDIR}/meson-logs/analyzer.log" || TEST_ERROR=$?
+            "${TEST_LOG}" || TEST_ERROR=$?
 
         if [ "${TEST_ERROR:-0}" -ne 0 ]; then
             if [ "${GITHUB_ACTIONS}" = "true" ]; then
@@ -246,14 +250,12 @@ actuary_suite_analyzer() {
                     echo "### LLVM Analyzer"
                     echo "\`\`\`c"
                     awk '/warning:/{print prev_line "\n" $0} {if ($0 ~ /^\[[0-9]+\/[0-9]+\]/) {prev_line = $0} else {prev_line = prev_line "\n" $0}}' \
-                        "${ACTUARY_BUILDDIR}/meson-logs/analyzer.log"
+                        "${TEST_LOG}"
                     echo "\`\`\`"
                 } >> "${GITHUB_STEP_SUMMARY}"
-                echo "log=${ACTUARY_BUILDDIR}/meson-logs/scanbuild" >> "${GITHUB_OUTPUT}"
             fi
 
-            cat "${ACTUARY_BUILDDIR}/meson-logs/analyzer.log"
-            return "${TEST_ERROR}";
+            echo "${TEST_OUTPUT}" && return "${TEST_ERROR}";
         fi
     fi
 }
