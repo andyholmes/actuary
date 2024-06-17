@@ -261,28 +261,40 @@ actuary_suite_analyzer() {
 }
 
 actuary_suite_cppcheck() {
+    TEST_LOGDIR="${ACTUARY_BUILDDIR}/meson-logs"
+    if [ "${GITHUB_ACTIONS}" = "true" ]; then
+        echo "log=${TEST_LOGDIR}/cppcheck-html" >> "${GITHUB_OUTPUT}"
+    fi
+
     # Ensure a log directory exists where it is expected
     mkdir -p "${ACTUARY_BUILDDIR}/meson-logs"
 
     if [ "${GITHUB_ACTIONS}" = "true" ]; then
         # shellcheck disable=SC2086
-        cppcheck --error-exitcode=1 \
+        cppcheck --error-exitcode=0 \
+                 --check-level=exhaustive \
                  --library=gtk \
                  --quiet \
                  --template="::{severity} file={file},line={line},col={column}::{message}" \
                  ${ACTUARY_CPPCHECK_ARGS} \
-                 ${ACTUARY_CPPCHECK_PATH};
-    else
-        # shellcheck disable=SC2086
-        cppcheck --error-exitcode=1 \
-                 --library=gtk \
-                 --quiet \
-                 --xml \
-                 ${ACTUARY_CPPCHECK_ARGS} \
-                 ${ACTUARY_CPPCHECK_PATH} 2> "${ACTUARY_BUILDDIR}/meson-logs/cppcheck.xml" || \
-        (cppcheck-htmlreport --file "${ACTUARY_BUILDDIR}/meson-logs/cppcheck.xml" \
-                             --report-dir "${ACTUARY_BUILDDIR}/meson-logs/cppcheck-html" \
-                             --source-dir "${ACTUARY_WORKSPACE}" && exit 1);
+                 ${ACTUARY_CPPCHECK_PATH}
+    fi
+
+    # shellcheck disable=SC2086
+    cppcheck --error-exitcode=1 \
+             --check-level=exhaustive \
+             --library=gtk \
+             --quiet \
+             --xml \
+             ${ACTUARY_CPPCHECK_ARGS} \
+             ${ACTUARY_CPPCHECK_PATH} 2> \
+             "${TEST_LOGDIR}/cppcheck.xml" || TEST_ERROR=$?
+
+    if [ "${TEST_ERROR:-0}" -ne 0 ]; then
+        cppcheck-htmlreport --file "${TEST_LOGDIR}/cppcheck.xml" \
+                            --report-dir "${TEST_LOGDIR}/cppcheck-html" \
+                            --source-dir "${ACTUARY_WORKSPACE}"
+        return "${TEST_ERROR}"
     fi
 }
 
