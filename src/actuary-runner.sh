@@ -368,7 +368,7 @@ actuary_suite_abidiff() {
             } >> "${GITHUB_STEP_SUMMARY}"
         fi
 
-        echo "${ABIDIFF_OUTPUT}" && exit 1;
+        echo "${ABIDIFF_OUTPUT}" && return "${TEST_ERROR}";
     fi
 }
 
