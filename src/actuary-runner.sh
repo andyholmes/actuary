@@ -108,7 +108,7 @@ actuary_suite_test() {
 
     # shellcheck disable=SC2086
     dbus-run-session \
-        xvfb-run -d \
+        xwfb-run -- \
             meson test -C "${ACTUARY_BUILDDIR}" \
                        --print-errorlogs \
                        --repeat="${ACTUARY_TEST_REPEAT:-1}" \
