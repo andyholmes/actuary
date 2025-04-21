@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: CC0-1.0
 # SPDX-FileCopyrightText: No rights reserved
 
-FROM registry.fedoraproject.org/fedora:41
+FROM registry.fedoraproject.org/fedora:42
 
 RUN dnf install -y \
         --enablerepo=fedora-debuginfo,updates-debuginfo \
@@ -17,7 +17,7 @@ RUN dnf install -y \
 
 # Instrument libraries for ThreadSanitizer
 RUN git clone https://gitlab.gnome.org/GNOME/glib.git \
-              --branch glib-2-80 \
+              --branch glib-2-82 \
               --single-branch && \
     cd glib && \
     meson setup --prefix=/usr/tsan \
