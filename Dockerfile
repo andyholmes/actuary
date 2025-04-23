@@ -10,7 +10,7 @@ RUN dnf install -y \
         clang clang-analyzer clang-tools-extra compiler-rt cppcheck \
         cppcheck-htmlreport gcc gdb gettext git libabigail libasan libtsan \
         libubsan lld llvm meson mold appstream desktop-file-utils dbus-daemon \
-        lcov gnome-desktop-testing python-dbusmock xwayland-run rsync && \
+        lcov gnome-desktop-testing python-dbusmock xwayland-run awk rsync && \
     dnf install -y 'dnf-command(builddep)' && \
     dnf builddep -y glib glib-networking && \
     dnf clean all && rm -rf /var/cache/dnf
