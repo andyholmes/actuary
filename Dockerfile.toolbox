@@ -17,7 +17,7 @@ RUN dnf install -y \
 
 # Instrument libraries for ThreadSanitizer
 RUN git clone https://gitlab.gnome.org/GNOME/glib.git \
-              --branch glib-2-82 \
+              --branch glib-2-86 \
               --single-branch && \
     cd glib && \
     meson setup --prefix=/usr/tsan \
