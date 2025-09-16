@@ -2,7 +2,7 @@
     "name": "actuary",
     "main": "index.js",
     "type": "module",
-    "license": "GPL-2.0-or-later",
+    "license": "GPL-3.0-or-later",
     "scripts": {
         "test": "jest",
         "dist": "ncc build -o dist src/main.js"
