@@ -236,6 +236,8 @@ actuary_suite_analyzer() {
     # clang-analyzer
     elif [ "${CC}" = "clang" ]; then
         export SCANBUILD="@bindir@/actuary-scanbuild"
+        export CCC_CC=${CC}
+        export CCC_CXX=${CXX}
 
         # shellcheck disable=SC2086
         meson setup --buildtype=debug \
